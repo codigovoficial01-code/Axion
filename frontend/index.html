@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>AXION</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header>
+  <div class="logo">⚙️ AXION</div>
+</header>
+
+<main>
+  <h1>Transforme suas vendas em decisões automáticas</h1>
+
+  <section class="cards">
+
+    <div class="card">
+      <h2>Inserir vendas</h2>
+      <p>Cadastrar uma nova venda</p>
+      <button onclick="openSaleForm()">Inserir vendas</button>
+    </div>
+
+    <div class="card">
+      <h2>Ver minhas vendas</h2>
+      <p>Visualizar histórico de vendas</p>
+      <button onclick="loadSales()">Ver minhas vendas</button>
+    </div>
+
+    <div class="card">
+      <h2>Gerar decisões</h2>
+      <p>Análise automática das vendas</p>
+      <button class="yellow" onclick="generateDecisions()">Gerar decisões</button>
+    </div>
+
+  </section>
+
+  <div class="info">
+    Para começar: insira algumas vendas fictícias e depois clique em <b>Gerar decisões</b>.
+  </div>
+
+  <div id="output"></div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
