@@ -1,10 +1,17 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app.services import generate_decisions
+from fastapi import APIRouter
+from app.services import list_sales
 
-router = APIRouter(prefix="/analysis", tags=["Decision Analysis"])
+router = APIRouter()
 
 @router.get("/weekly-decisions")
-def weekly_decisions(db: Session = Depends(get_db)):
-    return generate_decisions(db)
+def generate_decisions():
+    sales = list_sales()
+
+    if not sales:
+        return {"decision": "Insira vendas para gerar decisões."}
+
+    total = sum(s.revenue for s in sales)
+
+    return {
+        "decision": f"Você faturou R$ {total:.2f}. Considere escalar os produtos mais vendidos."
+    }

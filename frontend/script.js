@@ -1,40 +1,69 @@
-const API_URL = "http://127.0.0.1:8000";
+// ====== TEMA ======
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.querySelector(".theme-toggle");
 
+  const theme = body.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  body.setAttribute("data-theme", theme);
+
+  btn.textContent = theme === "dark" ? "🌙" : "🌞";
+  localStorage.setItem("axion-theme", theme);
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem("axion-theme") || "dark";
+  document.body.setAttribute("data-theme", saved);
+  document.querySelector(".theme-toggle").textContent =
+    saved === "dark" ? "🌙" : "🌞";
+})();
+
+// ====== VENDAS ======
 function openSaleForm() {
-  const sale = {
-    product_name: "Produto Teste",
-    category: "Categoria A",
-    revenue: 150,
-    quantity: 1
+  saleModal.style.display = "flex";
+}
+
+function closeSaleForm() {
+  saleModal.style.display = "none";
+}
+
+async function submitSale() {
+  const data = {
+    product: product.value,
+    category: category.value,
+    revenue: revenue.value,
+    quantity: quantity.value
   };
 
-  fetch(`${API_URL}/sales/`, {
+  await fetch("/sales/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(sale)
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert("Venda inserida com sucesso!");
-    console.log(data);
-  })
-  .catch(err => alert("Erro ao inserir venda"));
+    body: JSON.stringify(data)
+  });
+
+  closeSaleForm();
+  loadSales();
 }
 
-function loadSales() {
-  fetch(`${API_URL}/sales/`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("output").innerText =
-        "📊 Vendas cadastradas:\n\n" + JSON.stringify(data, null, 2);
-    });
+async function loadSales() {
+  const res = await fetch("/sales/");
+  const data = await res.json();
+  output.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 }
 
-function generateDecisions() {
-  fetch(`${API_URL}/analysis/weekly-decisions`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("output").innerText =
-        "💡 Decisões do AXION:\n\n" + JSON.stringify(data, null, 2);
-    });
+async function generateDecisions() {
+  const res = await fetch("/sales/decisions");
+  const data = await res.json();
+
+  output.innerHTML = `
+    <h3>Total faturado: R$ ${data.total_sales.toFixed(2)}</h3>
+    <p>${data.decision}</p>
+  `;
+}
+
+async function resetDatabase() {
+  if (!confirm("Apagar TODAS as vendas?")) return;
+
+  const res = await fetch("/dev/reset-database", { method: "DELETE" });
+  const data = await res.json();
+  output.innerHTML = `<b>${data.status}</b>`;
 }

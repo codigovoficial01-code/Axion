@@ -1,15 +1,46 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
 from app.database import get_db
-from app.schemas import SaleCreate, SaleResponse
-from app import services
+from datetime import datetime
 
 router = APIRouter(prefix="/sales", tags=["Sales"])
 
-@router.post("/", response_model=SaleResponse)
-def create_sale(sale: SaleCreate, db: Session = Depends(get_db)):
-    return services.create_sale(db=db, sale=sale)
+@router.post("/")
+def create_sale(sale: dict):
+    conn = get_db()
+    cursor = conn.cursor()
 
-@router.get("/", response_model=list[SaleResponse])
-def list_sales(db: Session = Depends(get_db)):
-    return services.get_sales(db)
+    cursor.execute("""
+        INSERT INTO sales (product_name, category, revenue, quantity, created_at)
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        sale["product"],
+        sale["category"],
+        float(sale["revenue"]),
+        int(sale["quantity"]),
+        datetime.utcnow().isoformat()
+    ))
+
+    conn.commit()
+    return {"status": "Venda cadastrada com sucesso"}
+
+@router.get("/")
+def list_sales():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    rows = cursor.execute("SELECT * FROM sales").fetchall()
+    return [dict(row) for row in rows]
+
+@router.get("/decisions")
+def generate_decisions():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    total = cursor.execute(
+        "SELECT SUM(revenue * quantity) FROM sales"
+    ).fetchone()[0] or 0
+
+    return {
+        "total_sales": total,
+        "decision": "Aumentar estoque dos produtos mais vendidos"
+    }

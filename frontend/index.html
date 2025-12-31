@@ -3,44 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <title>AXION</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+
+<body data-theme="dark">
 
 <header>
   <div class="logo">⚙️ AXION</div>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 </header>
 
 <main>
   <h1>Transforme suas vendas em decisões automáticas</h1>
 
   <section class="cards">
-
     <div class="card">
       <h2>Inserir vendas</h2>
       <p>Cadastrar uma nova venda</p>
-      <button onclick="openSaleForm()">Inserir vendas</button>
+      <button onclick="openSaleForm()">Inserir venda</button>
     </div>
 
     <div class="card">
       <h2>Ver minhas vendas</h2>
-      <p>Visualizar histórico de vendas</p>
-      <button onclick="loadSales()">Ver minhas vendas</button>
+      <p>Visualizar histórico</p>
+      <button onclick="loadSales()">Ver vendas</button>
     </div>
 
     <div class="card">
       <h2>Gerar decisões</h2>
-      <p>Análise automática das vendas</p>
+      <p>Análise automática</p>
       <button class="yellow" onclick="generateDecisions()">Gerar decisões</button>
     </div>
-
   </section>
 
   <div class="info">
-    Para começar: insira algumas vendas fictícias e depois clique em <b>Gerar decisões</b>.
+    Para começar: insira algumas vendas fictícias e depois clique em
+    <b>Gerar decisões</b>.
+  </div>
+
+  <!-- Modal -->
+  <div id="saleModal" class="modal">
+    <div class="modal-content">
+      <h2>Nova Venda</h2>
+      <input id="product" placeholder="Produto" />
+      <input id="category" placeholder="Categoria" />
+      <input id="revenue" type="number" placeholder="Valor (R$)" />
+      <input id="quantity" type="number" placeholder="Quantidade" />
+
+      <div class="modal-actions">
+        <button onclick="submitSale()">Salvar</button>
+        <button class="cancel" onclick="closeSaleForm()">Cancelar</button>
+      </div>
+    </div>
   </div>
 
   <div id="output"></div>
+
+  <div class="dev-tools">
+    <button class="danger" onclick="resetDatabase()">Resetar dados (DEV)</button>
+  </div>
 </main>
 
 <script src="script.js"></script>

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
-from sqlalchemy.sql import func
+from datetime import datetime
 from app.database import Base
 
 class Sale(Base):
@@ -10,4 +10,4 @@ class Sale(Base):
     category = Column(String, nullable=False)
     revenue = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime, default=datetime.utcnow)

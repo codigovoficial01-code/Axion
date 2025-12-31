@@ -1,32 +1,30 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import Base, engine
 from app.routes.sales import router as sales_router
-from app.routes.analysis import router as analysis_router
+from app.routes.decisions import router as decisions_router
 
-# Cria as tabelas
-Base.metadata.create_all(bind=engine)
+app = FastAPI(title="AXION")
 
-app = FastAPI(
-    title="AXION",
-    description="Decision Intelligence para E-commerce",
-    version="0.1.0"
-)
-
-# 🔐 CORS (necessário para o frontend)
+# CORS (importante para frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # em produção, restringir
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
-    return {"status": "AXION rodando com sucesso 🚀"}
+# Servir arquivos estáticos (frontend)
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-# Rotas
-app.include_router(sales_router)
-app.include_router(analysis_router)
+# Rota raiz → Interface do Axion
+@app.get("/")
+def serve_frontend():
+    return FileResponse("frontend/index.html")
+
+# Rotas da API
+app.include_router(sales_router, prefix="/api")
+app.include_router(decisions_router, prefix="/api")
