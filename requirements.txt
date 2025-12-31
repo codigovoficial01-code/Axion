@@ -3,6 +3,4 @@ uvicorn
 sqlalchemy
 pydantic
 python-dotenv
-openai
-psycopg2-binary
-requests
+jinja2
