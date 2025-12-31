@@ -16,11 +16,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Servir frontend
+# Servir arquivos estáticos
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-@app.get("/")
-def home():
+# ROTA PRINCIPAL → INTERFACE
+@app.get("/", include_in_schema=False)
+def serve_frontend():
     return FileResponse("frontend/index.html")
 
 # API
