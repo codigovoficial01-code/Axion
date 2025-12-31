@@ -8,23 +8,21 @@ from app.routes.decisions import router as decisions_router
 
 app = FastAPI(title="AXION")
 
-# CORS (importante para frontend)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Servir arquivos estáticos (frontend)
+# Servir frontend
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-# Rota raiz → Interface do Axion
 @app.get("/")
-def serve_frontend():
+def home():
     return FileResponse("frontend/index.html")
 
-# Rotas da API
+# API
 app.include_router(sales_router, prefix="/api")
 app.include_router(decisions_router, prefix="/api")
